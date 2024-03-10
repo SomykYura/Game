@@ -1,15 +1,19 @@
-﻿namespace SportsCarTuningSimulator.Menus.Composite
+﻿using SportsCarTuningSimulator.Output;
+
+namespace SportsCarTuningSimulator.Menus.Composite
 {
     public class Menu : IMenuComponent
     {
         private readonly List<IMenuComponent> _components = new List<IMenuComponent>();
+        private readonly IPrintStrategy _print;
 
         public List<IMenuComponent> Components { get { return _components; } }
 
         public string Title { get; }
 
-        public Menu(string title)
+        public Menu(IPrintStrategy print, string title)
         {
+            _print = print;
             Title = title;
         }
 
@@ -20,29 +24,29 @@
 
         public void Display()
         {
-            Console.Clear();
-            Console.WriteLine(Title);
+            _print.Clear();
+            _print.Print(Title);
             for (int i = 0; i < _components.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. " + _components[i].Title);
+                _print.Print($"{i + 1}. " + _components[i].Title);
             }
 
-            Console.WriteLine("0. Вихiд");
+            _print.Print("0. Вихiд");
         }
 
         public void Execute()
         {
-            Console.WriteLine($"Ви обрали підменю: {Title}");
+            _print.Print($"Ви обрали підменю: {Title}");
             while (true)
             {
                 Display();
 
-                Console.WriteLine("Виберіть опцію (або введіть 0 для виходу з Під меню / Програми):");
+                _print.Print("Виберіть опцію (або введіть 0 для виходу з Під меню / Програми):");
 
                 int choice;
-                if (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > _components.Count)
+                if (!int.TryParse(_print.WaitForUserInput(), out choice) || choice < 0 || choice > _components.Count)
                 {
-                    Console.WriteLine("Невірний вибір. Спробуйте ще раз.");
+                    _print.Print("Невірний вибір. Спробуйте ще раз.");
                     continue;
                 }
 
