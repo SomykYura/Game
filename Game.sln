@@ -5,6 +5,10 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsCarTuningSimulator", "SportsCarTuningSimulator\SportsCarTuningSimulator.csproj", "{C2509105-2ACB-495C-A186-BD808F294944}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsCarTuningSimulator.BLL", "SportsCarTuningSimulator.BLL\SportsCarTuningSimulator.BLL.csproj", "{A5DFE5F6-EBF0-4974-98F9-FB6E455A2A7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsCarTuningSimulator.DAL", "SportsCarTuningSimulator.DAL\SportsCarTuningSimulator.DAL.csproj", "{95435BA7-5A26-43CC-8066-1D185E9670CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{C2509105-2ACB-495C-A186-BD808F294944}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2509105-2ACB-495C-A186-BD808F294944}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2509105-2ACB-495C-A186-BD808F294944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5DFE5F6-EBF0-4974-98F9-FB6E455A2A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5DFE5F6-EBF0-4974-98F9-FB6E455A2A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5DFE5F6-EBF0-4974-98F9-FB6E455A2A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5DFE5F6-EBF0-4974-98F9-FB6E455A2A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95435BA7-5A26-43CC-8066-1D185E9670CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95435BA7-5A26-43CC-8066-1D185E9670CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95435BA7-5A26-43CC-8066-1D185E9670CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95435BA7-5A26-43CC-8066-1D185E9670CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
