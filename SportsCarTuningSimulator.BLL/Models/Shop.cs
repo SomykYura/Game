@@ -1,83 +1,105 @@
-﻿namespace SportsCarTuningSimulator.BLL.Models
+﻿using SportsCarTuningSimulator.BLL.Cars.Details;
+
+namespace SportsCarTuningSimulator.BLL.Models
 {
-    class Shop
+    public class Shop
     {
-        // Перерахування для типу деталі
-        public enum DetailType
-        {
-            Engine,
-            Transmission,
-            Chassis
-        }
-
-        // Перерахування для класу деталі
-        public enum DetailClass
-        {
-            Premium,    // Преміум
-            Standard,   // Стандартний
-            Basic       // Базовий
-        }
-
-        // Клас деталі
-        class Detail
-        {
-            public string Name { get; set; }
-            public int Price { get; set; }
-            public int Horsepower { get; set; }
-            public DetailType Type { get; set; }
-            public DetailClass Class { get; set; }
-
-            public Detail(string name, int price, int horsepower, DetailType type, DetailClass @class)
-            {
-                Name = name;
-                Price = price;
-                Horsepower = horsepower;
-                Type = type;
-                Class = @class;
-            }
-        }
-
-        private List<Detail> details;
+        private List<Detail> ShopDetails { get; set; }
 
         public Shop()
         {
-            details = new List<Detail>();
+            ShopDetails = new List<Detail>() {
 
-            // Додавання деталей до магазину
-            details.Add(new Detail("Двигун", 1000, 200, DetailType.Engine, DetailClass.Premium));
-            details.Add(new Detail("Трансмісія", 800, 150, DetailType.Transmission, DetailClass.Standard));
-            details.Add(new Detail("Шасі", 1200, 100, DetailType.Chassis, DetailClass.Basic));
+                new(1, "EcoBoost Turbocharged Engine", 1000, 300, DetailClass.Intermediate, DetailType.Engine),
+                new(2, "6-Speed Automatic Transmission", 1100, 200, DetailClass.Intermediate, DetailType.Transmission),
+                new(3, "Torsion Beam Rear Suspension", 800, 80, DetailClass.Intermediate, DetailType.Chassis),
 
-            // Додавання інших деталей до магазину
-            details.Add(new Detail("Двигун", 900, 180, DetailType.Engine, DetailClass.Standard));
-            details.Add(new Detail("Двигун", 700, 120, DetailType.Engine, DetailClass.Basic));
-            details.Add(new Detail("Трансмісія", 700, 120, DetailType.Transmission, DetailClass.Basic));
-            details.Add(new Detail("Трансмісія", 1000, 180, DetailType.Transmission, DetailClass.Standard));
-            details.Add(new Detail("Шасі", 1500, 200, DetailType.Chassis, DetailClass.Premium));
-            details.Add(new Detail("Шасі", 1000, 150, DetailType.Chassis, DetailClass.Standard));
+                new(4, "V6 Twin-Turbo Engine", 3000, 400, DetailClass.Medium, DetailType.Engine),
+                new(5, "7-Speed Dual-Clutch Transmission", 1200, 250, DetailClass.Medium, DetailType.Transmission),
+                new(6, "Sport-Tuned Suspension with Magnetic Ride Control", 900, 90, DetailClass.Medium, DetailType.Chassis),
+
+                new(7, "Turbocharged V8", 5000, 500, DetailClass.Premium, DetailType.Engine),
+                new(8, "8-Speed Automatic Transmission with Launch Control", 1300, 300, DetailClass.Premium, DetailType.Transmission),
+                new(9, "Carbon Fiber Monocoque Chassis", 1200, 100, DetailClass.Premium, DetailType.Chassis)
+            };
         }
 
-        // Метод для відображення доступних деталей в магазині
-        public void DisplayAvailableDetails()
+        public void PrintAvailableDetails(Player player)
         {
-            Console.WriteLine("Доступні деталі в магазині:");
-            foreach (var detail in details)
+            Console.WriteLine("Доступнi деталi в магазинi:");
+            foreach (var detail in GetAvailableDetails(player))
             {
-                Console.WriteLine($"Назва: {detail.Name}, Тип: {detail.Type}, Клас: {detail.Class}, Ціна: {detail.Price}, Кількість кінських сил: {detail.Horsepower}");
+                Console.WriteLine($"Id {detail.Id}\n" +
+                    $" Назва: {detail.Name},\n" +
+                    $" Клас: {detail.Class},\n" +
+                    $" Цiна: {detail.Price},\n" +
+                    $" Кiлькiсть кiнських сил: {detail.Horsepower}");
             }
         }
 
-        public bool BuyDetail(string detailName)
-        { 
-            foreach (var detail in details)
+        public List<Detail> GetAvailableDetails(Player player)
+        {
+            var query = from details in ShopDetails
+            where player.Car.Details.Any(detail => detail.Type == details.Type
+                && (int)detail.Class > (int)details.Class)
+            select details;
+
+            var result = query.ToList();
+
+            return result;
+        }
+
+        public List<Detail> GetDetailsByUserBudget(Player player)
+        {
+            var query = from details in ShopDetails
+            where player.Car.Details.Any(detail => detail.Type == details.Type
+                && (int)detail.Class > (int)details.Class && details.Price <= player.Money)
+            select details;
+
+            var result = query.ToList();
+
+            return result;
+        }
+
+        public Detail BuyDetail(Player player, int detailId)
+        {
+            var detail = ShopDetails.First(detail => detail.Id == detailId);
+            if (detail == null)
             {
-                if (detail.Name.ToLower() == detailName.ToLower())
-                {
-                    return true; 
-                }
+                throw new Exception("Деталь з таким ID не знайдено.");
             }
 
-            return false;
+            if (player.Money < detail.Price)
+            {
+                throw new Exception("У вас недостатньо коштів для покупки цієї деталі.");
+            }
+
+            player.Money -= detail.Price;
+            player.Car.InstallDetail(detail);
+
+            return detail;
+        }
+
+        public void BuyRandomDetail(Player player)
+        {
+            var detailsByUserBudget = GetDetailsByUserBudget(player);
+            if (detailsByUserBudget.Count == 0)
+            {
+                return;
+            }
+
+            int randomIndex = new Random().Next(0, detailsByUserBudget.Count);
+            var detail = detailsByUserBudget[randomIndex];
+            if (detail != null)
+            {
+                player.Money -= detail.Price;
+                player.Car.InstallDetail(detail);
+            }
+        }
+
+        public Detail GetDetailById(int detailId)
+        {
+            return ShopDetails.First(x => x.Id == detailId);
         }
     }
 }

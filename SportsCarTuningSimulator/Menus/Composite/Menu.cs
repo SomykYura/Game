@@ -36,17 +36,17 @@ namespace SportsCarTuningSimulator.Menus.Composite
 
         public void Execute()
         {
-            _print.Print($"Ви обрали підменю: {Title}");
+            _print.Print($"Ви обрали пiдменю: {Title}");
             while (true)
             {
                 Display();
 
-                _print.Print("Виберіть опцію (або введіть 0 для виходу з Під меню / Програми):");
+                _print.Print("Виберiть опцiю");
 
                 int choice;
                 if (!int.TryParse(_print.WaitForUserInput(), out choice) || choice < 0 || choice > _components.Count)
                 {
-                    _print.Print("Невірний вибір. Спробуйте ще раз.");
+                    _print.Print("Невiрний вибiр. Спробуйте ще раз.");
                     continue;
                 }
 
@@ -56,7 +56,7 @@ namespace SportsCarTuningSimulator.Menus.Composite
                 if (_components[choice - 1] is MenuItem menuItem)
                 {
                     menuItem.Execute();
-                    if (menuItem.ToString() == "Вийти з Під меню / Програми")
+                    if (menuItem.ToString() == "Вийти з Пiд меню / Програми")
                         break;
                 }
                 else if (_components[choice - 1] is Menu submenu)
