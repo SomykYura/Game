@@ -4,26 +4,31 @@ namespace SportsCarTuningSimulator.BLL
 {
     public class GrandPrix
     {
-        public string Name { get; set; }
-        public List<Race> Races { get; private set; }
+        public IReadOnlyList<Race> Races { get; }
 
-        public GrandPrix(string name)
+        private readonly List<Race> _races;
+
+        public GrandPrix()
         {
-            Races = new List<Race>();
-            Name = name;
+            _races = new List<Race>();
+            Races = _races.AsReadOnly();
         }
 
         public void AddRace(Race race)
         {
-            Races.Add(race);
+            if (race == null)
+            {
+                throw new ArgumentNullException(nameof(race), "Race cannot be null.");
+            }
+
+            _races.Add(race);
         }
 
-        public void DisplayRaces()
+        internal void Reset()
         {
-            Console.WriteLine("Список гонок:");
-            foreach (var race in Races)
+            foreach (var race in _races)
             {
-                Console.WriteLine($"Назва: {race.Name}");
+                race.ClearResults();
             }
         }
     }

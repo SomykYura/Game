@@ -1,64 +1,74 @@
 ﻿using SportsCarTuningSimulator.BLL;
+using SportsCarTuningSimulator.BLL.GameSystem;
 using SportsCarTuningSimulator.BLL.Models;
 using SportsCarTuningSimulator.Menus;
 using SportsCarTuningSimulator.Menus.Composite;
 using SportsCarTuningSimulator.Output;
+using SportsCarTuningSimulator.Shared;
+#nullable disable
 
-class Program
+
+//1. Доведи до ладу те що є
+//2. Можливо збереження стану гри
+//3. Кнопка нова гра
+
+IPrintStrategy _print = null;
+
+try
 {
+    _print = new ConsolePrintStrategy();
 
-    //1. Доведи до ладу те що є
-    //2. Можливо збереження стану гри
-    //3. Кнопка нова гра
-    
-    private static IPrintStrategy _print;
+    var game = new GameBuilder()
+        .WithPlayer(Player.GeneratePlayer("Gamer"))
+        .WithRivalsCount(9)
+        .Build();
 
-    static void Main(string[] args)
+    Menu rootMenu = BuildMenu(new GameFacade(game));
+    rootMenu.Execute();
+}
+catch (Exception)
+{
+    Console.WriteLine(Resource.ReportToSupport);
+}
+
+Menu BuildMenu(GameFacade gameFacade)
+{
+    var builder = new MenuBuilder(ResourceMenu.MainMenu, _print);
+    builder.AddSubMenu(ResourceMenu.GrandPrix, grandPriMenu =>
     {
-        _print = new ConsolePrintStrategy();
-
-        Menu rootMenu = BuildMenu(_print, new Game(Player.GeneratePlayer("Gamer"), 9));
-        rootMenu.Execute();
-    }
-
-    private static Menu BuildMenu(IPrintStrategy print, Game game)
+        grandPriMenu.AddMenuItem(ResourceMenu.Race, () => gameFacade.StartRace());
+        grandPriMenu.AddMenuItem(ResourceMenu.ViewResults, () => gameFacade.PrintResults());
+        grandPriMenu.AddMenuItem(ResourceMenu.RestartGame, () => gameFacade.RestartGame());
+    })
+    .AddSubMenu(ResourceMenu.Car, carMenu =>
     {
-        var builder = new MenuBuilder("Головне меню", print);
-        builder.AddSubMenu("Grand pri", grandPriMenu =>
+        carMenu.AddMenuItem(ResourceMenu.ViewCarCharacteristics, () => _print.Print(gameFacade.GetCurrentPlayer().Car.ToString()));
+        carMenu.AddSubMenu(ResourceMenu.Shop, shopMenu =>
         {
-            grandPriMenu.AddMenuItem("Гонка", () => game.StartRace());
-            grandPriMenu.AddMenuItem("Подивитися результати", () => game.PrintResults());
-        })
-        .AddSubMenu("Car", carMenu =>
-        {
-            carMenu.AddMenuItem("Переглянути поточнi характеристики автомобiля", () => game.GetPlayers().First(x => x.Id == game._player.Id).Car.DisplayCharacteristics());
-            carMenu.AddSubMenu("Shop", shopMenu =>
-            {
-                shopMenu.AddMenuItem("Display available details", () => game._shop.PrintAvailableDetails(game._player));
-                shopMenu.AddMenuItem("Buy detail", () => BuyDetail(game._player, game._shop));
-                shopMenu.AddMenuItem("Переглянути поточнi характеристики автомобiля", () => game.GetPlayers().First(x => x.Id == game._player.Id).Car.DisplayCharacteristics());
-            });
-        })
-        .AddMenuItem("Про гравця", () => game._player.DisplayPlayerInfo())
-        .AddMenuItem("About game", () =>  print.Print("Ви обрали About game"));
+            shopMenu.AddMenuItem(ResourceMenu.AvailableDetails, () => gameFacade.GetShop().PrintAvailableDetails(gameFacade.GetCurrentPlayer()));
+            shopMenu.AddMenuItem(ResourceMenu.BuyDetail, () => BuyDetail(gameFacade.GetCurrentPlayer(), gameFacade.GetShop()));
+            shopMenu.AddMenuItem(ResourceMenu.ViewCarCharacteristics, () => _print.Print(gameFacade.GetCurrentPlayer().Car.ToString()));
+        });
+    })
+    .AddMenuItem(ResourceMenu.AboutPlayer, () => _print.Print(gameFacade.GetCurrentPlayer().ToString()))
+    .AddMenuItem(ResourceMenu.AboutGame, () => _print.Print(Resource.AboutGame));
 
-        return builder.Build();
-    }
+    return builder.Build();
+}
 
-    private static void BuyDetail(Player player, Shop shop)
+void BuyDetail(Player player, Shop shop)
+{
+    try
     {
-        try
+        if (int.TryParse(_print.WaitForUserInput(), out int detailId))
         {
-            if (int.TryParse(_print.WaitForUserInput(), out int detailId))
-            {
-                var detail = shop.BuyDetail(player, detailId);
+            var detail = shop.BuyDetail(player, detailId);
 
-                _print.Print($"Ви успішно купил {detail.Name}.");
-            }
+            _print.Print($"Ви успішно купили {detail.Name}.");
         }
-        catch (Exception ex) 
-        {
-            _print.Print(ex.ToString());
-        }
+    }
+    catch (Exception ex)
+    {
+        _print.Print(ex.ToString());
     }
 }

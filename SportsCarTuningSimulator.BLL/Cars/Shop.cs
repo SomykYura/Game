@@ -29,19 +29,15 @@ namespace SportsCarTuningSimulator.BLL.Models
             Console.WriteLine("Доступнi деталi в магазинi:");
             foreach (var detail in GetAvailableDetails(player))
             {
-                Console.WriteLine($"Id {detail.Id}\n" +
-                    $" Назва: {detail.Name},\n" +
-                    $" Клас: {detail.Class},\n" +
-                    $" Цiна: {detail.Price},\n" +
-                    $" Кiлькiсть кiнських сил: {detail.Horsepower}");
+                Console.WriteLine(detail.ToString());
             }
         }
 
         public List<Detail> GetAvailableDetails(Player player)
         {
             var query = from details in ShopDetails
-            where player.Car.Details.Any(detail => detail.Type == details.Type
-                && (int)detail.Class > (int)details.Class)
+            where player.Car.Details.Any(detail => detail.Key == details.Type
+                && (int)detail.Value.Class > (int)details.Class)
             select details;
 
             var result = query.ToList();
@@ -52,8 +48,8 @@ namespace SportsCarTuningSimulator.BLL.Models
         public List<Detail> GetDetailsByUserBudget(Player player)
         {
             var query = from details in ShopDetails
-            where player.Car.Details.Any(detail => detail.Type == details.Type
-                && (int)detail.Class > (int)details.Class && details.Price <= player.Money)
+            where player.Car.Details.Any(detail => detail.Key == details.Type
+                && (int)detail.Value.Class > (int)details.Class && details.Price <= player.Money)
             select details;
 
             var result = query.ToList();
@@ -63,12 +59,7 @@ namespace SportsCarTuningSimulator.BLL.Models
 
         public Detail BuyDetail(Player player, int detailId)
         {
-            var detail = ShopDetails.First(detail => detail.Id == detailId);
-            if (detail == null)
-            {
-                throw new Exception("Деталь з таким ID не знайдено.");
-            }
-
+            var detail = ShopDetails.First(detail => detail.Id == detailId) ?? throw new Exception("Деталь з таким ID не знайдено.");
             if (player.Money < detail.Price)
             {
                 throw new Exception("У вас недостатньо коштів для покупки цієї деталі.");

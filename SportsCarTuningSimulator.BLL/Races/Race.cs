@@ -4,59 +4,68 @@ namespace SportsCarTuningSimulator.BLL.Races
 {
     public class Race
     {
-        public string Name { get; set; }
-        public Track RaceTrack { get; set; }
-        public List<Player> Participants { get; set; }
+        public string Name { get; }
+        public Track RaceTrack { get; }
+        public IReadOnlyList<Player> Participants { get; }
         public bool IsCompleted { get { return _results.Count != 0; } }
-        // Створи окремий клас результату (playerId, position, points)
-        private Dictionary<int, int> _results = new Dictionary<int, int>();
 
-        public Race(string name, Track raceTrack, List<Player> players)
+        private readonly Dictionary<int, int> _results = new();
+
+        public Race(string name, Track raceTrack, IReadOnlyList<Player> participants)
         {
             Name = name;
             RaceTrack = raceTrack;
-            Participants = players;
+            Participants = participants;
         }
 
         public void RunRace()
         {
-            var maxHorsepower = Participants.Max(player => player.Car.Horsepower);
+            var maxHorsepower = Participants.Max(player => player.Car.GetHorsepower());
             foreach (var player in Participants)
             {
-                player.Luck = new Random().Next(0, player.Car.Horsepower + 1) * 100 / maxHorsepower;
+                player.Luck = new Random().Next(0, player.Car.GetHorsepower() + 1) * 100 / maxHorsepower;
             }
 
-            var sortedPlayers = Participants.OrderByDescending(player => player.Car.Horsepower)
+            var sortedPlayers = Participants.OrderByDescending(player => player.Car.GetHorsepower())
                 .ThenByDescending(player => player.Luck)
                 .ToList();
 
             for (int i = 0; i < sortedPlayers.Count; i++)
             {
                 _results.Add(sortedPlayers[i].Id, i + 1);
+                sortedPlayers[i].Money += CalculatePrizeMoney(i + 1);
             }
-
-            foreach (var participant in Participants)
-            {
-                participant.Money += CalculatePrizeMoney(_results.Single(result => result.Key == participant.Id).Value);
-            }
-
-            DisplayResults();
-            // нарахуй очки гравцям, якщо без очків визначай на основі списку позицій (Чим менше середнє тим краще і місце ближче до переможця)
         }
 
         public void DisplayResults()
         {
-            Console.WriteLine($"Результати гонки '{RaceTrack.Name}':");
-            Console.WriteLine("| Учасник | Місце |");
-            Console.WriteLine("|------------|-------|");
+            Console.WriteLine($"Race Results for '{RaceTrack.Name}':");
+            Console.WriteLine("| Participant | Position | Prize Money");
+            Console.WriteLine("|-------------|----------|------------|");
 
             foreach (var result in _results)
             {
-                Console.WriteLine($"| {Participants.First(player => player.Id == result.Key).Name, -11} | {result.Value, -5} |");
+                var participant = Participants.First(player => player.Id == result.Key);
+                Console.WriteLine($"| {participant.Name,-12} | {result.Value,-8} | {CalculatePrizeMoney(result.Value),-11} |");
             }
         }
 
-        private int CalculatePrizeMoney(int position)
+        public Dictionary<int, int> GetResults()
+        {
+            if (_results.Count == 0)
+            {
+                throw new InvalidOperationException("Race results are not available yet.");
+            }
+
+            return new Dictionary<int, int>(_results);
+        }
+
+        public void ClearResults()
+        {
+            _results.Clear();
+        }
+
+        private static int CalculatePrizeMoney(int position)
         {
             return position switch
             {
@@ -66,17 +75,6 @@ namespace SportsCarTuningSimulator.BLL.Races
                 4 => 800,
                 5 => 500,
                 _ => 100,
-            };
-        }
-
-        private int CalculatePrizePoints(int position)
-        {
-            return position switch
-            {
-                1 => 3,
-                2 => 2,
-                3 => 1,
-                _ => 0
             };
         }
     }

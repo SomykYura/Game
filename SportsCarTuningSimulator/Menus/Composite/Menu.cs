@@ -4,7 +4,7 @@ namespace SportsCarTuningSimulator.Menus.Composite
 {
     public class Menu : IMenuComponent
     {
-        private readonly List<IMenuComponent> _components = new List<IMenuComponent>();
+        private readonly List<IMenuComponent> _components = new();
         private readonly IPrintStrategy _print;
 
         public List<IMenuComponent> Components { get { return _components; } }
@@ -31,22 +31,21 @@ namespace SportsCarTuningSimulator.Menus.Composite
                 _print.Print($"{i + 1}. " + _components[i].Title);
             }
 
-            _print.Print("0. Вихiд");
+            _print.Print("0. Exit");
         }
 
         public void Execute()
         {
-            _print.Print($"Ви обрали пiдменю: {Title}");
+            _print.Print($"You have chosen the submenu: {Title}");
             while (true)
             {
                 Display();
 
-                _print.Print("Виберiть опцiю");
+                _print.Print("Choose an option:");
 
-                int choice;
-                if (!int.TryParse(_print.WaitForUserInput(), out choice) || choice < 0 || choice > _components.Count)
+                if (!int.TryParse(_print.WaitForUserInput(), out int choice) || choice < 0 || choice > _components.Count)
                 {
-                    _print.Print("Невiрний вибiр. Спробуйте ще раз.");
+                    _print.Print("Invalid choice. Please try again.");
                     continue;
                 }
 
@@ -56,7 +55,7 @@ namespace SportsCarTuningSimulator.Menus.Composite
                 if (_components[choice - 1] is MenuItem menuItem)
                 {
                     menuItem.Execute();
-                    if (menuItem.ToString() == "Вийти з Пiд меню / Програми")
+                    if (menuItem.ToString() == "Exit submenu / Program")
                         break;
                 }
                 else if (_components[choice - 1] is Menu submenu)

@@ -2,15 +2,30 @@
 {
     public class Detail
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Price { get; set; }
-        public int Horsepower { get; set; }
-        public DetailType Type { get; set; }
-        public DetailClass Class { get; set; }
+        public int Id { get; }
+        public string Name { get; }
+        public int Price { get; }
+        public int Horsepower { get; }
+        public DetailType Type { get; }
+        public DetailClass Class { get; }
 
         public Detail(int id, string name, int price, int horsepower, DetailClass @class, DetailType type)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
+            }
+
+            if (price < 0)
+            {
+                throw new ArgumentException("Price cannot be negative.", nameof(price));
+            }
+
+            if (horsepower < 0)
+            {
+                throw new ArgumentException("Horsepower cannot be negative.", nameof(horsepower));
+            }
+
             Id = id;
             Name = name;
             Price = price;
@@ -19,15 +34,13 @@
             Type = type;
         }
 
-        // Це хуйня потрібно міняти деталь повністю
-        public void Update(Detail newDetail)
+        public override string ToString()
         {
-            Id = newDetail.Id;
-            Name = newDetail.Name;
-            Price = newDetail.Price;
-            Horsepower = newDetail.Horsepower;
-            Class = newDetail.Class;
-            Type = newDetail.Type;
+            return $"Id: {Id}\n" +
+                $"Name: {Name},\n" +
+                $"Class: {Class},\n" +
+                $"Price: {Price},\n" +
+                $"Horsepower: {Horsepower}";
         }
     }
 }
