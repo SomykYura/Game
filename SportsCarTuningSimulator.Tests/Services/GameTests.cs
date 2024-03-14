@@ -27,23 +27,18 @@ namespace SportsCarTuningSimulator.Tests.Services
         [TestMethod]
         public void StartRace_FirstRace_ResultTableReturned()
         {
-            // Act
             var result = _game.StartRace();
 
-            // Assert
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
         public void GetRacesResults_AllRacesCompleted_ResultTextReturned()
         {
-            // Arrange
             RunAllRaces();
 
-            // Act
             var result = _game.GetRacesResults();
 
-            // Assert
             Assert.IsNotNull(result);
         }
 
