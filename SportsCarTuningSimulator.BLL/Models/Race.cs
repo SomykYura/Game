@@ -52,11 +52,6 @@
 
         public Dictionary<int, int> GetResults()
         {
-            if (_results.Count == 0)
-            {
-                throw new InvalidOperationException("Race results are not available yet.");
-            }
-
             return new Dictionary<int, int>(_results);
         }
 

@@ -1,6 +1,4 @@
 ﻿#nullable disable
-
-using SportsCarTuningSimulator;
 using SportsCarTuningSimulator.BLL.Models;
 using SportsCarTuningSimulator.BLL.Services;
 
@@ -14,12 +12,14 @@ namespace SportsCarTuningSimulator.BLL.Builders
         public GameBuilder WithPlayer(Player player)
         {
             _player = player;
+
             return this;
         }
 
         public GameBuilder WithRivalsCount(int count)
         {
             _rivalsCount = count;
+
             return this;
         }
 

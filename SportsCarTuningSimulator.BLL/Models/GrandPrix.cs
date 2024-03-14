@@ -22,7 +22,7 @@
             _races.Add(race);
         }
 
-        internal void Reset()
+        public void Reset()
         {
             foreach (var race in _races)
             {
