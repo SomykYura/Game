@@ -1,6 +1,4 @@
-﻿using SportsCarTuningSimulator.BLL.Races;
-
-namespace SportsCarTuningSimulator.BLL
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public class GrandPrix
     {

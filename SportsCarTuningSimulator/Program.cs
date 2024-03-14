@@ -1,19 +1,14 @@
-﻿using SportsCarTuningSimulator.BLL;
-using SportsCarTuningSimulator.BLL.GameSystem;
+﻿#nullable disable
+using SportsCarTuningSimulator.BLL.Builders;
+using SportsCarTuningSimulator.BLL.Facades;
 using SportsCarTuningSimulator.BLL.Models;
+using SportsCarTuningSimulator.BLL.Services;
 using SportsCarTuningSimulator.Menus;
 using SportsCarTuningSimulator.Menus.Composite;
 using SportsCarTuningSimulator.Output;
 using SportsCarTuningSimulator.Shared;
-#nullable disable
-
-
-//1. Доведи до ладу те що є
-//2. Можливо збереження стану гри
-//3. Кнопка нова гра
 
 IPrintStrategy _print = null;
-
 try
 {
     _print = new ConsolePrintStrategy();
@@ -36,16 +31,16 @@ Menu BuildMenu(GameFacade gameFacade)
     var builder = new MenuBuilder(ResourceMenu.MainMenu, _print);
     builder.AddSubMenu(ResourceMenu.GrandPrix, grandPriMenu =>
     {
-        grandPriMenu.AddMenuItem(ResourceMenu.Race, () => gameFacade.StartRace());
-        grandPriMenu.AddMenuItem(ResourceMenu.ViewResults, () => gameFacade.PrintResults());
-        grandPriMenu.AddMenuItem(ResourceMenu.RestartGame, () => gameFacade.RestartGame());
+        grandPriMenu.AddMenuItem(ResourceMenu.Race, () => _print.Print(gameFacade.StartRace()));
+        grandPriMenu.AddMenuItem(ResourceMenu.ViewResults, () => _print.Print(gameFacade.GetRacesResults()));
+        grandPriMenu.AddMenuItem(ResourceMenu.RestartGame, () => { gameFacade.RestartGame(); _print.Print(Resource.GameRestarted); });
     })
     .AddSubMenu(ResourceMenu.Car, carMenu =>
     {
         carMenu.AddMenuItem(ResourceMenu.ViewCarCharacteristics, () => _print.Print(gameFacade.GetCurrentPlayer().Car.ToString()));
         carMenu.AddSubMenu(ResourceMenu.Shop, shopMenu =>
         {
-            shopMenu.AddMenuItem(ResourceMenu.AvailableDetails, () => gameFacade.GetShop().PrintAvailableDetails(gameFacade.GetCurrentPlayer()));
+            shopMenu.AddMenuItem(ResourceMenu.AvailableDetails, () => _print.Print(gameFacade.GetShop().GetAvailableDetailsText(gameFacade.GetCurrentPlayer())));
             shopMenu.AddMenuItem(ResourceMenu.BuyDetail, () => BuyDetail(gameFacade.GetCurrentPlayer(), gameFacade.GetShop()));
             shopMenu.AddMenuItem(ResourceMenu.ViewCarCharacteristics, () => _print.Print(gameFacade.GetCurrentPlayer().Car.ToString()));
         });
@@ -60,11 +55,12 @@ void BuyDetail(Player player, Shop shop)
 {
     try
     {
+        _print.Print("Enter the detail ID: ");
         if (int.TryParse(_print.WaitForUserInput(), out int detailId))
         {
             var detail = shop.BuyDetail(player, detailId);
 
-            _print.Print($"Ви успішно купили {detail.Name}.");
+            _print.Print($"You have successfully purchased {detail.Name}.");
         }
     }
     catch (Exception ex)

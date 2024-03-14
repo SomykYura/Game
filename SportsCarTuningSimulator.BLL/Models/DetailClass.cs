@@ -1,8 +1,8 @@
-﻿namespace SportsCarTuningSimulator.BLL.Cars.Details
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public enum DetailClass
     {
-        Premium,     
+        Premium,
         Medium,
         Intermediate,
         Basic

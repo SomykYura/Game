@@ -1,6 +1,10 @@
 ﻿#nullable disable
 
-namespace SportsCarTuningSimulator.BLL.GameSystem
+using SportsCarTuningSimulator;
+using SportsCarTuningSimulator.BLL.Models;
+using SportsCarTuningSimulator.BLL.Services;
+
+namespace SportsCarTuningSimulator.BLL.Builders
 {
     public class GameBuilder
     {

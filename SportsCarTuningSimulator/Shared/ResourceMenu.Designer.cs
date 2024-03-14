@@ -106,6 +106,24 @@ namespace SportsCarTuningSimulator.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose an option.
+        /// </summary>
+        internal static string ChooseOption {
+            get {
+                return ResourceManager.GetString("ChooseOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0. Exit.
+        /// </summary>
+        internal static string Exit {
+            get {
+                return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grand Prix.
         /// </summary>
         internal static string GrandPrix {

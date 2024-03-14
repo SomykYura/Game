@@ -1,4 +1,4 @@
-﻿namespace SportsCarTuningSimulator.BLL.Cars.Details
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public enum DetailType
     {

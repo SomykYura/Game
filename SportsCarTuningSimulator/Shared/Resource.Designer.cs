@@ -74,6 +74,24 @@ namespace SportsCarTuningSimulator.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The game has been restarted..
+        /// </summary>
+        internal static string GameRestarted {
+            get {
+                return ResourceManager.GetString("GameRestarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press the button to continue..
+        /// </summary>
+        internal static string PressButton {
+            get {
+                return ResourceManager.GetString("PressButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected exception, report your issue to support@support.com.
         /// </summary>
         internal static string ReportToSupport {

@@ -1,6 +1,4 @@
-﻿using SportsCarTuningSimulator.BLL.Models;
-
-namespace SportsCarTuningSimulator.BLL.Races
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public class Race
     {
@@ -37,17 +35,19 @@ namespace SportsCarTuningSimulator.BLL.Races
             }
         }
 
-        public void DisplayResults()
+        public string GetResultsTable()
         {
-            Console.WriteLine($"Race Results for '{RaceTrack.Name}':");
-            Console.WriteLine("| Participant | Position | Prize Money");
-            Console.WriteLine("|-------------|----------|------------|");
-
-            foreach (var result in _results)
+            var resultText = $"Race results for '{RaceTrack.Name}':\n" +
+                    "| Participant | Position | Prize Money |\n" +
+                    "|-------------|----------|------------|\n";
+            foreach (var result in _results.OrderBy(x => x.Value))
             {
                 var participant = Participants.First(player => player.Id == result.Key);
-                Console.WriteLine($"| {participant.Name,-12} | {result.Value,-8} | {CalculatePrizeMoney(result.Value),-11} |");
+
+                resultText += $"| {participant.Name,-12} | {result.Value,-8} | {CalculatePrizeMoney(result.Value),-11} |\n";
             }
+
+            return resultText;
         }
 
         public Dictionary<int, int> GetResults()

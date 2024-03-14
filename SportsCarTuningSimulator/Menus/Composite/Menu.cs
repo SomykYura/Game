@@ -1,4 +1,5 @@
 ﻿using SportsCarTuningSimulator.Output;
+using SportsCarTuningSimulator.Shared;
 
 namespace SportsCarTuningSimulator.Menus.Composite
 {
@@ -31,21 +32,19 @@ namespace SportsCarTuningSimulator.Menus.Composite
                 _print.Print($"{i + 1}. " + _components[i].Title);
             }
 
-            _print.Print("0. Exit");
+            _print.Print(ResourceMenu.Exit);
         }
 
         public void Execute()
         {
-            _print.Print($"You have chosen the submenu: {Title}");
             while (true)
             {
                 Display();
 
-                _print.Print("Choose an option:");
+                _print.Print(ResourceMenu.ChooseOption);
 
                 if (!int.TryParse(_print.WaitForUserInput(), out int choice) || choice < 0 || choice > _components.Count)
                 {
-                    _print.Print("Invalid choice. Please try again.");
                     continue;
                 }
 
@@ -55,13 +54,12 @@ namespace SportsCarTuningSimulator.Menus.Composite
                 if (_components[choice - 1] is MenuItem menuItem)
                 {
                     menuItem.Execute();
-                    if (menuItem.ToString() == "Exit submenu / Program")
-                        break;
                 }
                 else if (_components[choice - 1] is Menu submenu)
                 {
                     submenu.Execute();
                 }
+                _print.Print(Resource.PressButton);
             }
         }
     }

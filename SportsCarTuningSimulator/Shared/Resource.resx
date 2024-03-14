@@ -124,6 +124,12 @@ Version: 1.0.0.0
 Release date: March 13, 2024
 Contact information: yuriy.somyk@nltu.lviv.ua</value>
   </data>
+  <data name="GameRestarted" xml:space="preserve">
+    <value>The game has been restarted.</value>
+  </data>
+  <data name="PressButton" xml:space="preserve">
+    <value>Press the button to continue.</value>
+  </data>
   <data name="ReportToSupport" xml:space="preserve">
     <value>Unexpected exception, report your issue to support@support.com</value>
   </data>

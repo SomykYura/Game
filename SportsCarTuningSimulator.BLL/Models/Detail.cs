@@ -1,4 +1,4 @@
-﻿namespace SportsCarTuningSimulator.BLL.Cars.Details
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public class Detail
     {
@@ -11,21 +11,6 @@
 
         public Detail(int id, string name, int price, int horsepower, DetailClass @class, DetailType type)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
-            }
-
-            if (price < 0)
-            {
-                throw new ArgumentException("Price cannot be negative.", nameof(price));
-            }
-
-            if (horsepower < 0)
-            {
-                throw new ArgumentException("Horsepower cannot be negative.", nameof(horsepower));
-            }
-
             Id = id;
             Name = name;
             Price = price;

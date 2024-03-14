@@ -1,6 +1,7 @@
 ﻿using SportsCarTuningSimulator.BLL.Models;
+using SportsCarTuningSimulator.BLL.Services;
 
-namespace SportsCarTuningSimulator.BLL.GameSystem
+namespace SportsCarTuningSimulator.BLL.Facades
 {
     public class GameFacade
     {
@@ -13,8 +14,8 @@ namespace SportsCarTuningSimulator.BLL.GameSystem
 
         public Player GetCurrentPlayer() => _game.GetCurrentPlayer();
         public Shop GetShop() => _game.GetShop();
-        public void StartRace() => _game.StartRace();
-        public void PrintResults() => _game.PrintResults();
+        public string StartRace() => _game.StartRace();
+        public string GetRacesResults() => _game.GetRacesResults();
         public void RestartGame() => _game.Restart();
     }
 }

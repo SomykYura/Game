@@ -1,6 +1,4 @@
-﻿using SportsCarTuningSimulator.BLL.Cars;
-
-namespace SportsCarTuningSimulator.BLL
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public class Player
     {
@@ -25,10 +23,10 @@ namespace SportsCarTuningSimulator.BLL
 
         public static List<Player> GeneratePlayers(int count)
         {
-           var players = new List<Player>();
+            var players = new List<Player>();
             for (int i = 0; i < count; i++)
             {
-                string playerName = $"{nameof(Player)} {(i + 1)}";
+                string playerName = $"{nameof(Player)} {i + 1}";
                 Car standardCar = Car.CreateStandardCar();
 
                 players.Add(new Player(i + 2, playerName, 1000, standardCar));

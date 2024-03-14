@@ -132,6 +132,12 @@
   <data name="Car" xml:space="preserve">
     <value>Car</value>
   </data>
+  <data name="ChooseOption" xml:space="preserve">
+    <value>Choose an option</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>0. Exit</value>
+  </data>
   <data name="GrandPrix" xml:space="preserve">
     <value>Grand Prix</value>
   </data>

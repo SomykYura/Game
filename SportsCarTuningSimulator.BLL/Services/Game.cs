@@ -1,7 +1,6 @@
 ﻿using SportsCarTuningSimulator.BLL.Models;
-using SportsCarTuningSimulator.BLL.Races;
 
-namespace SportsCarTuningSimulator.BLL.GameSystem
+namespace SportsCarTuningSimulator.BLL.Services
 {
     public class Game
     {
@@ -19,17 +18,19 @@ namespace SportsCarTuningSimulator.BLL.GameSystem
             BuyRandomCompetitorDetails();
         }
 
-        public void StartRace()
+        public string StartRace()
         {
             var incompleteRace = _grandPrixes.Races.FirstOrDefault(race => !race.IsCompleted);
             if (incompleteRace != null)
             {
                 incompleteRace.RunRace();
                 BuyRandomCompetitorDetails();
+
+                return incompleteRace.GetResultsTable();
             }
             else
             {
-                PrintResults();
+                return GetResultsTable();
             }
         }
 
@@ -38,12 +39,15 @@ namespace SportsCarTuningSimulator.BLL.GameSystem
             _rivals.ForEach(player => _shop.BuyRandomDetail(player));
         }
 
-        public void PrintResults()
+        public string GetRacesResults()
         {
+            var resultText = string.Empty;
             foreach (var race in _grandPrixes.Races)
             {
-                race.DisplayResults();
+                resultText += $"{race.GetResultsTable()}\n";
             }
+
+            return resultText;
         }
 
         public void Restart()
@@ -64,6 +68,31 @@ namespace SportsCarTuningSimulator.BLL.GameSystem
             return _player;
         }
 
+        private string GetResultsTable()
+        {
+            var resultText = $"Grand pri results:\n" +
+                "|   Player   | Position |\n" +
+                "|------------|----------|\n";
+
+            var playersResults = new Dictionary<string, int>();
+            foreach (var player in GetPlayers())
+            {
+                var sumPositions = _grandPrixes.Races.Sum(race => race.GetResults().Single(result => result.Key == player.Id).Value);
+
+                playersResults.Add(player.Name, sumPositions);
+            }
+
+            var results = playersResults.OrderBy(result => result.Value);
+            for (int i = 1; i <= playersResults.Count; i++)
+            {
+                var result = results.ToArray()[i - 1];
+
+                resultText += $"| {result.Key, -10} | {i, -10} |\n";
+            }
+
+            return resultText;
+        }
+
         private GrandPrix InitializeRaces()
         {
             var players = GetPlayers();
@@ -81,6 +110,7 @@ namespace SportsCarTuningSimulator.BLL.GameSystem
         {
             var playerList = new List<Player> { _player };
             playerList.AddRange(_rivals);
+
             return playerList;
         }
     }

@@ -1,6 +1,4 @@
-﻿using SportsCarTuningSimulator.BLL.Cars.Details;
-
-namespace SportsCarTuningSimulator.BLL.Cars
+﻿namespace SportsCarTuningSimulator.BLL.Models
 {
     public class Car
     {
